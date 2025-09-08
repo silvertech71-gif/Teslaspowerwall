@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Powershell Shop — Accessories & Apparel</title>
+  <meta name="description" content="Explore official Powershell merchandise, accessories, and apparel. Find everything from car accessories to clothing and lifestyle items." />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ============ CSS RESET (modern minimal) ============ */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: #0b0d10;
+      color: #e9eef5;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    img, picture, video, canvas, svg { display: block; max-width: 100%; }
+    input, button, textarea, select { font: inherit; color: inherit; }
+    a { color: inherit; text-decoration: none; }
+    :root{
+      --bg: #0b0d10;
+      --bg-elev: #10141a;
+      --text: #e9eef5;
+      --muted: #b8c2cf;
+      --accent: #3ee6b2; /* subtle futuristic teal */
+      --accent-2: #8aa4ff; /* cool blue accent */
+      --card: #0f1319;
+      --border: #1a2029;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 14px;
+      --maxw: 1200px;
+      --gap: 28px;
+      --h1: clamp(2.2rem, 3.2vw + 1rem, 4.5rem);
+      --h2: clamp(1.6rem, 2.2vw + .6rem, 2.8rem);
+      --h3: clamp(1.1rem, 1.2vw + .7rem, 1.6rem);
+    }
+    /* ============ Global ============ */
+    .container { width: min(100% - 32px, var(--maxw)); margin: 0 auto; }
+    h1, h2, h3, .brand {
+      font-family: Montserrat, Inter, system-ui, sans-serif;
+      letter-spacing: .02em;
+    }
+    h1 {
+      font-weight: 800;
+      font-size: var(--h1);
+      line-height: 1.05;
+      margin: 0 0 14px;
+    }
+    h2 {
+      font-weight: 700;
+      font-size: var(--h2);
+      line-height: 1.1;
+      margin: 0 0 12px;
+    }
+    h3 {
+      font-weight: 600;
+      font-size: var(--h3);
+      margin: 0 0 10px;
+    }
+    p {
+      color: var(--muted);
+      margin: 0 0 16px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--muted);
+      background: rgba(255,255,255,0.02);
+    }
+    /* ============ Nav ============ */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(11, 13, 16, 0.7);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      transition: background .3s ease, box-shadow .3s ease, border-color .3s ease;
+    }
+    .nav.scrolled {
+      background: rgba(11, 13, 16, 0.9);
+      box-shadow: var(--shadow);
+      border-color: rgba(255,255,255,.08);
+    }
+    .nav-inner {
+      display: grid;
+      grid-template-columns: auto 1fr auto auto;
+      align-items: center;
+      gap: 20px;
+      height: 64px;
+    }
+    .brand {
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .brand-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: radial-gradient(65% 65% at 30% 30%, #fff 0, var(--accent) 55%, transparent 100%);
+      box-shadow: 0 0 18px var(--accent);
+    }
+    .menu {
+      display: flex;
+      gap: 18px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .menu a {
+      position: relative;
+      padding: 8px 10px;
+      color: #dfe7f3;
+      font-weight: 500;
+    }
+    .menu a::after{
+      content:"";
+      position:absolute;
+      left:10px;
+      right:10px;
+      bottom:6px;
+      height:2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .25s ease;
+    }
+    .menu a:hover::after{
+      transform: scaleX(1);
+    }
+    .btn {
+      --bgc: #fff; --fgc: #000;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      padding:10px 16px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-weight: 700;
+      cursor:pointer;
+      transition: transform .15s ease, background .3s ease, border-color .3s ease, color .3s ease;
+    }
+    .btn:active{
+      transform: translateY(1px);
+    }
+    .btn.primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #051016;
+    }
+    .btn.secondary{
+      background: transparent;
+      color: #e6eef8;
+      border-color: #2a3442;
+    }
+    .mobile-menu-toggle {
+      display: none;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #051016;
+      border: 1px solid transparent;
+      padding: 8px 14px;
+      font-size: 0.9em;
+      font-weight: 600;
+      white-space: nowrap;
+      border-radius: 999px;
+    }
+    @media (max-width: 980px){
+      .nav-inner {
+        grid-template-columns: auto 1fr auto;
+        gap: 10px;
+      }
+      .menu {
+        display: none;
+        position: absolute;
+        top: 64px;
+        left: 0;
+        right: 0;
+        background: #0b0f15;
+        border-bottom: 1px solid #1c2430;
+        padding: 12px 16px;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .menu.open {
+        display: flex;
+      }
+      .btn.secondary {
+        display: none;
+      }
+      .mobile-menu-toggle {
+        display: flex;
+      }
+    }
+    /* ============ Hero ============ */
+    .hero {
+      position: relative;
+      min-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      padding-bottom: 60px;
+      overflow: clip;
+      isolation: isolate;
+    }
+    .hero-media {
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+    }
+    .hero-media .backdrop {
+      position: absolute;
+      inset: 0;
+      background: url('https://digitalassets.tesla.com/tesla-contents/image/upload/f_auto,q_auto/Shop-Hero-Desktop.jpg') center/cover no-repeat;
+      filter: saturate(1.05) brightness(.72) contrast(1.05);
+      will-change: transform;
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent, #0b0d10 85%);
+      pointer-events: none;
+    }
+    .hero-content {
+      text-align: center;
+    }
+    .hero h1 {
+      font-weight: 800;
+      letter-spacing: .01em;
+      margin-bottom: 8px;
+    }
+    .hero p.sub {
+      font-size: clamp(1rem, .6vw + .9rem, 1.25rem);
+      max-width: 820px;
+      margin: 0 auto 22px;
+    }
+    .cta-row {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      justify-content: center;
+      align-items: center;
+      max-width: 400px;
+      width: 100%;
+      margin: 0 auto;
+    }
+    .cta-row .btn {
+      width: 100%;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    .hero .pill {
+      margin-bottom: 14px;
+    }
+    .cta-row .btn.white-btn {
+      background: #fff;
+      color: #000;
+      font-weight: 600;
+    }
+    .cta-row .btn.dark-btn {
+      background: #111;
+      color: #fff;
+      border: 1px solid #555;
+      font-weight: 600;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+    }
+    @media (min-width: 720px) {
+      .cta-row {
+        flex-direction: row;
+        max-width: 380px;
+      }
+      .cta-row .btn {
+        width: 180px;
+      }
+    }
+    /* ============ Main Content Sections ============ */
+    .section {
+      padding: 60px 0;
+    }
+    .section-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 32px;
+    }
+    .product-card {
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: transform .3s ease, box-shadow .3s ease;
+    }
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow);
+    }
+    .product-image {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      display: block;
+    }
+    .product-content {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+    .product-content h3 {
+      font-size: 1.25rem;
+      margin: 0 0 8px;
+    }
+    .product-content p.muted {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-bottom: 16px;
+      flex-grow: 1;
+    }
+    .product-price {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+    .product-card .btn {
+      width: 100%;
+    }
+    
+    /* ============ Final CTA Section ============ */
+    .final-cta {
+      padding-top: 60px;
+      padding-bottom: 100px;
+    }
+    .final-cta .cta-box {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.005));
+      padding: clamp(28px, 6vw, 60px);
+      text-align: center;
+    }
+    .final-cta .cta-box h2 {
+      margin-bottom: 18px;
+    }
+    /* ============ Footer ============ */
+    footer {
+      border-top: 1px solid #151b24;
+      background:#0a0e13;
+      padding-top: 50px;
+    }
+    .foot-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 30px;
+    }
+    .foot-grid h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 15px;
+    }
+    .foot-grid ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .foot-grid ul li {
+      margin-bottom: 8px;
+    }
+    .foot-grid a {
+      color: var(--muted);
+      font-size: 0.9rem;
+      transition: color 0.2s ease;
+    }
+    .foot-grid a:hover {
+      color: var(--text);
+    }
+    .foot-bottom {
+      padding: 34px 0;
+      display:flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items:center;
+      gap: 14px 20px;
+    }
+    .legal {
+      display:flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      color: #738096;
+      font-size: .95rem;
+      justify-content: center;
+    }
+    @media (max-width: 720px){
+      .foot-bottom {
+        flex-direction: column;
+        text-align:center;
+        gap: 14px;
+      }
+      .legal {
+        justify-content: center;
+        gap: 10px;
+        font-size: .85rem;
+      }
+    }
+    /* ============ Utilities ============ */
+    .muted { color: var(--muted); }
+    .sp-xxl { margin-top: 34px; }
+    .sp-xl  { margin-top: 24px; }
+    .sp-lg  { margin-top: 18px; }
+    .kbd-focus:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 8px; }
+    /* ============ Motion Preferences ============ */
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+      .hero-media .backdrop { transform: none !important; }
+    }
+    html { scroll-behavior: smooth; }
+  </style>
+</head>
+<body>
+
+<header class="nav" role="banner">
+    <div class="container nav-inner">
+      <a href="index.html" class="brand kbd-focus" aria-label="Powershell Home">
+        <span class="brand-dot" aria-hidden="true"></span>
+        Powershell
+      </a>
+      <nav class="menu" aria-label="Primary">
+        <a href="vehicles.html">Vehicles</a>
+        <a href="energy.html">Energy</a>
+        <a href="charging.html">Charging</a>
+        <a href="discover.html">Discover</a>
+        <a href="shop.html">Shop</a>
+        <a href="support.html">Support</a>
+        <a href="country.html">Country</a>
+        <a href="account.html">Account</a>
+      </nav>
+      <button class="mobile-menu-toggle" aria-label="Open Menu" aria-expanded="false">Menu</button>
+    </div>
+</header>
+
+
+
+<main>
+  <section class="hero" id="shop" aria-label="Powershell Shop">
+    <div class="hero-media" aria-hidden="true">
+      <div class="backdrop" id="parallax" style="background-image: url('https://digitalassets.tesla.com/tesla-contents/image/upload/f_auto,q_auto/Shop-Hero-Desktop.jpg');"></div>
+    </div>
+    <div class="hero-overlay" aria-hidden="true"></div>
+    <div class="container hero-content">
+      <h1 class="reveal" style="transition-delay: .06s;">Powershell Shop</h1>
+      <p class="sub reveal" style="transition-delay: .12s;">Discover authentic Powershell accessories, apparel, and lifestyle products.</p>
+    </div>
+  </section>
+
+  <section class="section container" aria-label="Accessories">
+    <header class="section-header reveal">
+      <h2>Vehicle & Charging</h2>
+      <p class="muted">Accessories designed to enhance your Powershell ownership experience.</p>
+    </header>
+    <div class="product-grid reveal">
+      <div class="product-card">
+        <img loading="lazy" class="product-image" src="https://digitalassets.tesla.com/tesla-contents/image/upload/f_auto,q_auto/Mobile-Connector-Main-Hero-Desktop.jpg" alt="Wall Connector">
+        <div class="product-content">
+          <h3>Wall Connector</h3>
+          <p class="muted">The most convenient charging solution for your home.</p>
+          <div class="product-price">$475</div>
+          <button class="btn primary">Buy Now</button>
+        </div>
+      </div>
+      <div class="product-card">
+        <img loading="lazy" class="product-image" src="https://digitalassets.tesla.com/tesla-contents/image/upload/f_auto,q_auto/Gen-2-Mobile-Connector-Main-Hero-Desktop.jpg" alt="Mobile Connector">
+        <div class="product-content">
+          <h3>Mobile Connector</h3>
+          <p class="muted">Charge on the go with this versatile portable connector.</p>
+          <div class="product-price">$230</div>
+          <button class="btn primary">Buy Now</button>
+        </div>
+      </div>
+      <div class="product-card">
+        <img loading="lazy" class="product-image" src="https://digitalassets.tesla.com/tesla-contents/image/upload/f_auto,q_auto/Floor-Mats.jpg" alt="All-Weather Floor Mats">
+        <div class="product-content">
+          <h3>All-Weather Floor Mats</h3>
+          <p class="muted">Ultimate protection for your vehicle's interior.</p>
+          <div class="product-price">$225</div>
+          <button class="btn primary">Buy Now</button>
+        </div>
+      </div>
+      <div class="product-card">
+        <img loading="lazy" class="product-image" src="https://digitalassets.tesla.com/tesla-contents/image/upload/f_auto,q_auto/Roof-Rack-All-Weather-Floor-Mats.jpg" alt="Roof Rack">
+        <div class="product-content">
+          <h3>Roof Rack</h3>
+          <p class="muted">Expand your vehicle’s carrying capacity with a secure roof rack.</p>
+          <div class="product-price">$450</div>
+          <button class="btn primary">Buy Now</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <section class="section container" aria-label="Apparel">
+    <header class="section-header reveal">
+      <h2>Apparel & Lifestyle</h2>
+      <p class="muted">Shop our collection of Powershell branded clothing and lifestyle items.</p>
+    </header>
+    <div class="product-grid reveal">
+      <div class="product-card">
+        <img loading="lazy" class="product-image" src="https://digitalassets.tesla.com/tesla-contents/image/upload/f_auto,q_auto/Tesla-Hat-Lifestyle-1.jpg" alt="Powershell Hat">
+        <div class="product-content">
+          <h3>Powershell Hat</h3>
+          <p class="muted">A classic, comfortable cap with a sleek logo.</p>
+          <div class="product-price">$30</div>
+          <button class="btn primary">Buy Now</button>
+        </div>
+      </div>
+      <div class="product-card">
+        <img loading="lazy" class="product-image" src="https://digitalassets.tesla.com/tesla-contents/image/upload/f_auto,q_auto/Model-3-Jacket-Main-Hero-Desktop.jpg" alt="Powershell Hoodie">
+        <div class="product-content">
+          <h3>Powershell Hoodie</h3>
+          <p class="muted">Warm and stylish, perfect for any climate.</p>
+          <div class="product-price">$65</div>
+          <button class="btn primary">Buy Now</button>
+        </div>
+      </div>
+      <div class="product-card">
+        <img loading="lazy" class="product-image" src="https://digitalassets.tesla.com/tesla-contents/image/upload/f_auto,q_auto/Tesla-Unisex-T-Shirt-Main-Hero-Desktop.jpg" alt="Powershell T-Shirt">
+        <div class="product-content">
+          <h3>Powershell T-Shirt</h3>
+          <p class="muted">Soft, breathable, and designed for comfort.</p>
+          <div class="product-price">$40</div>
+          <button class="btn primary">Buy Now</button>
+        </div>
+      </div>
+      <div class="product-card">
+        <img loading="lazy" class="product-image" src="https://digitalassets.tesla.com/tesla-contents/image/upload/f_auto,q_auto/Tumbler-Hero-Desktop.jpg" alt="Powershell Tumbler">
+        <div class="product-content">
+          <h3>Powershell Tumbler</h3>
+          <p class="muted">Keep your drinks hot or cold on the go.</p>
+          <div class="product-price">$25</div>
+          <button class="btn primary">Buy Now</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="final-cta container" aria-label="Shop Full Catalog">
+    <div class="cta-box reveal">
+      <h2>Browse the Full Collection</h2>
+      <p class="muted">Find even more accessories, parts, and exclusive Powershell gear in our complete catalog.</p>
+      <div class="sp-lg"></div>
+      <a href="#full-catalog" class="btn primary">View Full Catalog</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+    <div class="container foot-grid">
+      <div>
+        <h4>Powershell</h4>
+        <ul>
+          <li><a href="#energy">Energy</a></li>
+          <li><a href="#power-everything">Ecosystem</a></li>
+          <li><a href="#specs">Specifications</a></li>
+          <li><a href="#order">Order</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Products</h4>
+        <ul>
+          <li><a href="#solar-panels">Solar Panels</a></li>
+          <li><a href="#solar-roof">Solar Roof</a></li>
+          <li><a href="#wall-connector">Wall Connector</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Vehicle</h4>
+        <ul>
+          <li><a href="#ev-charging">EV Charging</a></li>
+          <li><a href="#vehicle-support">Vehicle Support</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#careers">Careers</a></li>
+          <li><a href="#investors">Investors</a></li>
+          <li><a href="#partners">Partners</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#contact">Contact Us</a></li>
+          <li><a href="#faqs">FAQs</a></li>
+          <li><a href="#help">Help Center</a></li>
+          <li><a href="#downloads">Downloads</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="container foot-bottom">
+      <div class="legal">
+        <a href="#privacy">Privacy Policy</a>
+        <a href="#terms">Terms of Service</a>
+        <span>© <span id="year"></span> Powershell</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ===================== UTIL: On ready =====================
+    const onReady = (fn) => (document.readyState !== 'loading') ? fn() : document.addEventListener('DOMContentLoaded', fn);
+
+    onReady(() => {
+      // Year
+      document.getElementById('year').textContent = new Date().getFullYear();
+
+      // Sticky nav shadow toggle
+      const nav = document.querySelector('.nav');
+      const updateNav = () => {
+        (window.scrollY > 6) ? nav.classList.add('scrolled') : nav.classList.remove('scrolled');
+      };
+      updateNav();
+      window.addEventListener('scroll', updateNav, { passive: true });
+
+      // Mobile menu
+      const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+      const menu = document.querySelector('.menu');
+      mobileMenuToggle.addEventListener('click', () => {
+        const open = menu.classList.toggle('open');
+        mobileMenuToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+      // Close menu on link click (mobile)
+      menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+        menu.classList.remove('open');
+        mobileMenuToggle.setAttribute('aria-expanded', 'false');
+      }));
+
+      // Intersection reveal
+      const reveals = document.querySelectorAll('.reveal');
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.classList.add('in');
+            io.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.1 });
+      reveals.forEach(el => io.observe(el));
+
+      // Parallax hero
+      const parallax = document.getElementById('parallax');
+      let lastY = 0;
+      const onScroll = () => {
+        const y = window.scrollY;
+        const offset = Math.min(40, y * 0.08);
+        if (Math.abs(y - lastY) > 1) {
+          parallax.style.transform = `translate3d(0, ${offset}px, 0) scale(1.03)`;
+          lastY = y;
+        }
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+    });
+  </script>
+</body>
+</html>

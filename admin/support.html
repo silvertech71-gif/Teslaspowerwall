@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Powershell Support — Help Center & Service</title>
+  <meta name="description" content="Find Powershell support resources, service information, and help articles. Get answers to your questions about vehicles, energy, and charging." />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ============ CSS RESET (modern minimal) ============ */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: #0b0d10;
+      color: #e9eef5;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    img, picture, video, canvas, svg { display: block; max-width: 100%; }
+    input, button, textarea, select { font: inherit; color: inherit; }
+    a { color: inherit; text-decoration: none; }
+    :root{
+      --bg: #0b0d10;
+      --bg-elev: #10141a;
+      --text: #e9eef5;
+      --muted: #b8c2cf;
+      --accent: #3ee6b2; /* subtle futuristic teal */
+      --accent-2: #8aa4ff; /* cool blue accent */
+      --card: #0f1319;
+      --border: #1a2029;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 14px;
+      --maxw: 1200px;
+      --gap: 28px;
+      --h1: clamp(2.2rem, 3.2vw + 1rem, 4.5rem);
+      --h2: clamp(1.6rem, 2.2vw + .6rem, 2.8rem);
+      --h3: clamp(1.1rem, 1.2vw + .7rem, 1.6rem);
+    }
+    /* ============ Global ============ */
+    .container { width: min(100% - 32px, var(--maxw)); margin: 0 auto; }
+    h1, h2, h3, .brand {
+      font-family: Montserrat, Inter, system-ui, sans-serif;
+      letter-spacing: .02em;
+    }
+    h1 {
+      font-weight: 800;
+      font-size: var(--h1);
+      line-height: 1.05;
+      margin: 0 0 14px;
+    }
+    h2 {
+      font-weight: 700;
+      font-size: var(--h2);
+      line-height: 1.1;
+      margin: 0 0 12px;
+    }
+    h3 {
+      font-weight: 600;
+      font-size: var(--h3);
+      margin: 0 0 10px;
+    }
+    p {
+      color: var(--muted);
+      margin: 0 0 16px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--muted);
+      background: rgba(255,255,255,0.02);
+    }
+    /* ============ Nav ============ */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(11, 13, 16, 0.7);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      transition: background .3s ease, box-shadow .3s ease, border-color .3s ease;
+    }
+    .nav.scrolled {
+      background: rgba(11, 13, 16, 0.9);
+      box-shadow: var(--shadow);
+      border-color: rgba(255,255,255,.08);
+    }
+    .nav-inner {
+      display: grid;
+      grid-template-columns: auto 1fr auto auto;
+      align-items: center;
+      gap: 20px;
+      height: 64px;
+    }
+    .brand {
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .brand-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: radial-gradient(65% 65% at 30% 30%, #fff 0, var(--accent) 55%, transparent 100%);
+      box-shadow: 0 0 18px var(--accent);
+    }
+    .menu {
+      display: flex;
+      gap: 18px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .menu a {
+      position: relative;
+      padding: 8px 10px;
+      color: #dfe7f3;
+      font-weight: 500;
+    }
+    .menu a::after{
+      content:"";
+      position:absolute;
+      left:10px;
+      right:10px;
+      bottom:6px;
+      height:2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .25s ease;
+    }
+    .menu a:hover::after{
+      transform: scaleX(1);
+    }
+    .btn {
+      --bgc: #fff; --fgc: #000;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      padding:10px 16px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-weight: 700;
+      cursor:pointer;
+      transition: transform .15s ease, background .3s ease, border-color .3s ease, color .3s ease;
+    }
+    .btn:active{
+      transform: translateY(1px);
+    }
+    .btn.primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #051016;
+    }
+    .btn.secondary{
+      background: transparent;
+      color: #e6eef8;
+      border-color: #2a3442;
+    }
+    .mobile-menu-toggle {
+      display: none;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #051016;
+      border: 1px solid transparent;
+      padding: 8px 14px;
+      font-size: 0.9em;
+      font-weight: 600;
+      white-space: nowrap;
+      border-radius: 999px;
+    }
+    @media (max-width: 980px){
+      .nav-inner {
+        grid-template-columns: auto 1fr auto;
+        gap: 10px;
+      }
+      .menu {
+        display: none;
+        position: absolute;
+        top: 64px;
+        left: 0;
+        right: 0;
+        background: #0b0f15;
+        border-bottom: 1px solid #1c2430;
+        padding: 12px 16px;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .menu.open {
+        display: flex;
+      }
+      .btn.secondary {
+        display: none;
+      }
+      .mobile-menu-toggle {
+        display: flex;
+      }
+    }
+    /* ============ Main Content Sections ============ */
+    .main-content {
+      padding-top: 100px; /* Space for the fixed nav */
+    }
+    .section {
+      padding: 60px 0;
+    }
+    .intro-header {
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto 60px;
+    }
+    .support-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 32px;
+    }
+    .support-card {
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      text-align: left;
+      transition: background .2s ease;
+    }
+    .support-card:hover {
+      background: #14181f;
+    }
+    .support-card h3 {
+      font-size: 1.5rem;
+      margin-top: 0;
+      color: var(--accent);
+    }
+    .support-card p {
+      flex-grow: 1;
+    }
+    .support-card a {
+      font-weight: 600;
+      color: var(--accent-2);
+      text-decoration: underline;
+      transition: color .2s ease;
+    }
+    .support-card a:hover {
+      color: var(--text);
+    }
+    /* ============ Final CTA Section ============ */
+    .final-cta {
+      padding-top: 60px;
+      padding-bottom: 100px;
+    }
+    .final-cta .cta-box {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.005));
+      padding: clamp(28px, 6vw, 60px);
+      text-align: center;
+    }
+    .final-cta .cta-box h2 {
+      margin-bottom: 18px;
+    }
+    /* ============ Footer ============ */
+    footer {
+      border-top: 1px solid #151b24;
+      background:#0a0e13;
+      padding-top: 50px;
+    }
+    .foot-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 30px;
+    }
+    .foot-grid h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 15px;
+    }
+    .foot-grid ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .foot-grid ul li {
+      margin-bottom: 8px;
+    }
+    .foot-grid a {
+      color: var(--muted);
+      font-size: 0.9rem;
+      transition: color 0.2s ease;
+    }
+    .foot-grid a:hover {
+      color: var(--text);
+    }
+    .foot-bottom {
+      padding: 34px 0;
+      display:flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items:center;
+      gap: 14px 20px;
+    }
+    .legal {
+      display:flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      color: #738096;
+      font-size: .95rem;
+      justify-content: center;
+    }
+    @media (max-width: 720px){
+      .foot-bottom {
+        flex-direction: column;
+        text-align:center;
+        gap: 14px;
+      }
+      .legal {
+        justify-content: center;
+        gap: 10px;
+        font-size: .85rem;
+      }
+    }
+    /* ============ Utilities ============ */
+    .muted { color: var(--muted); }
+    .sp-xxl { margin-top: 34px; }
+    .sp-xl  { margin-top: 24px; }
+    .sp-lg  { margin-top: 18px; }
+    .kbd-focus:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 8px; }
+    /* ============ Motion Preferences ============ */
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+    }
+    html { scroll-behavior: smooth; }
+  </style>
+</head>
+<body>
+
+<header class="nav" role="banner">
+    <div class="container nav-inner">
+      <a href="index.html" class="brand kbd-focus" aria-label="Powershell Home">
+        <span class="brand-dot" aria-hidden="true"></span>
+        Powershell
+      </a>
+      <nav class="menu" aria-label="Primary">
+        <a href="vehicles.html">Vehicles</a>
+        <a href="energy.html">Energy</a>
+        <a href="charging.html">Charging</a>
+        <a href="discover.html">Discover</a>
+        <a href="shop.html">Shop</a>
+        <a href="support.html">Support</a>
+        <a href="country.html">Country</a>
+        <a href="account.html">Account</a>
+      </nav>
+      <button class="mobile-menu-toggle" aria-label="Open Menu" aria-expanded="false">Menu</button>
+    </div>
+</header>
+
+
+<main class="main-content">
+  <section class="section container" aria-label="Support">
+    <header class="intro-header">
+      <h1 class="reveal" style="transition-delay: .06s;">Powershell Support</h1>
+      <p class="sub muted reveal" style="transition-delay: .12s;">Find the resources you need for your Powershell vehicle or energy products. Our support pages are the quickest way to find answers, schedule service, or learn more about your products.</p>
+    </header>
+    <div class="support-grid reveal">
+      <div class="support-card">
+        <h3>Help Center</h3>
+        <p class="muted">Search our comprehensive library of help articles, guides, and FAQs for immediate assistance.</p>
+        <a href="#help-center">Go to Help Center &rarr;</a>
+      </div>
+      <div class="support-card">
+        <h3>Contact Us</h3>
+        <p class="muted">Need to speak with a representative? Find the right contact for sales, service, or general inquiries.</p>
+        <a href="#contact-us">Contact Support &rarr;</a>
+      </div>
+      <div class="support-card">
+        <h3>Find a Location</h3>
+        <p class="muted">Locate a nearby Powershell Service Center, Body Shop, or a Supercharger station.</p>
+        <a href="#find-location">Find a Location &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section container" aria-label="Vehicle Support">
+    <header class="intro-header">
+      <h2>Vehicle Support</h2>
+      <p class="muted">Everything you need to know about your Powershell vehicle, from charging and maintenance to features and software updates.</p>
+    </header>
+    <div class="support-grid reveal">
+      <div class="support-card">
+        <h3>Owner's Manual</h3>
+        <p class="muted">Access the full digital owner's manual for your vehicle, available in multiple languages.</p>
+        <a href="#owners-manual">View Manual &rarr;</a>
+      </div>
+      <div class="support-card">
+        <h3>Vehicle Maintenance</h3>
+        <p class="muted">Learn about recommended service schedules and how to care for your vehicle.</p>
+        <a href="#maintenance">Read More &rarr;</a>
+      </div>
+      <div class="support-card">
+        <h3>Roadside Assistance</h3>
+        <p class="muted">Get immediate help for flat tires, lockouts, or other roadside emergencies.</p>
+        <a href="#roadside">Request Assistance &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section container" aria-label="Energy Support">
+    <header class="intro-header">
+      <h2>Energy Support</h2>
+      <p class="muted">Get support for your Powershell energy products, including Solar, Powerwall, and EV charging solutions.</p>
+    </header>
+    <div class="support-grid reveal">
+      <div class="support-card">
+        <h3>Energy Product Guides</h3>
+        <p class="muted">Find installation manuals, troubleshooting guides, and FAQs for your solar and Powerwall systems.</p>
+        <a href="#energy-guides">View Guides &rarr;</a>
+      </div>
+      <div class="support-card">
+        <h3>Solar & Powerwall Monitoring</h3>
+        <p class="muted">Learn how to monitor your system’s performance and energy flow using the Powershell app.</p>
+        <a href="#monitoring">Learn More &rarr;</a>
+      </div>
+      <div class="support-card">
+        <h3>System Warranty</h3>
+        <p class="muted">Understand the warranty coverage for your Powershell solar and battery products.</p>
+        <a href="#warranty">Review Warranty &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="final-cta container" aria-label="Visit the Powershell Blog">
+    <div class="cta-box reveal">
+      <h2>Stay Informed</h2>
+      <p class="muted">Find the latest news, product announcements, and company updates on our official blog.</p>
+      <div class="sp-lg"></div>
+      <a href="#blog" class="btn primary">Visit the Blog</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+    <div class="container foot-grid">
+      <div>
+        <h4>Powershell</h4>
+        <ul>
+          <li><a href="#energy">Energy</a></li>
+          <li><a href="#power-everything">Ecosystem</a></li>
+          <li><a href="#specs">Specifications</a></li>
+          <li><a href="#order">Order</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Products</h4>
+        <ul>
+          <li><a href="#solar-panels">Solar Panels</a></li>
+          <li><a href="#solar-roof">Solar Roof</a></li>
+          <li><a href="#wall-connector">Wall Connector</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Vehicle</h4>
+        <ul>
+          <li><a href="#ev-charging">EV Charging</a></li>
+          <li><a href="#vehicle-support">Vehicle Support</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#careers">Careers</a></li>
+          <li><a href="#investors">Investors</a></li>
+          <li><a href="#partners">Partners</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#contact">Contact Us</a></li>
+          <li><a href="#faqs">FAQs</a></li>
+          <li><a href="#help">Help Center</a></li>
+          <li><a href="#downloads">Downloads</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="container foot-bottom">
+      <div class="legal">
+        <a href="#privacy">Privacy Policy</a>
+        <a href="#terms">Terms of Service</a>
+        <span>© <span id="year"></span> Powershell</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ===================== UTIL: On ready =====================
+    const onReady = (fn) => (document.readyState !== 'loading') ? fn() : document.addEventListener('DOMContentLoaded', fn);
+
+    onReady(() => {
+      // Year
+      document.getElementById('year').textContent = new Date().getFullYear();
+
+      // Sticky nav shadow toggle
+      const nav = document.querySelector('.nav');
+      const updateNav = () => {
+        (window.scrollY > 6) ? nav.classList.add('scrolled') : nav.classList.remove('scrolled');
+      };
+      updateNav();
+      window.addEventListener('scroll', updateNav, { passive: true });
+
+      // Mobile menu
+      const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+      const menu = document.querySelector('.menu');
+      mobileMenuToggle.addEventListener('click', () => {
+        const open = menu.classList.toggle('open');
+        mobileMenuToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+      // Close menu on link click (mobile)
+      menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+        menu.classList.remove('open');
+        mobileMenuToggle.setAttribute('aria-expanded', 'false');
+      }));
+
+      // Intersection reveal
+      const reveals = document.querySelectorAll('.reveal');
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.classList.add('in');
+            io.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.1 });
+      reveals.forEach(el => io.observe(el));
+    });
+  </script>
+</body>
+</html>

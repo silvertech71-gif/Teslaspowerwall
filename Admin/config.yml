@@ -1,0 +1,15 @@
+backend:
+  name: git-gateway
+  branch: main # Branch to update
+
+media_folder: "assets/images" # Folder where uploaded files are stored
+public_folder: "/assets/images" # The public access path of uploaded files
+
+collections:
+  - name: "pages"
+    label: "Pages"
+    folder: "content/pages" # The path to your content files
+    create: true # Allow users to create new files
+    fields: # The fields for your content
+      - {label: "Title", name: "title", widget: "string", required: true}
+      - {label: "Body", name: "body", widget: "markdown"}
